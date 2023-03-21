@@ -1,5 +1,6 @@
 package com.mysite.sbb.Question.Service;
 
+import com.mysite.sbb.Question.DTO.QuestionForm;
 import com.mysite.sbb.Question.Entity.Question;
 import com.mysite.sbb.Question.Entity.QuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +13,10 @@ import java.util.List;
 public class QuestionService {
     final QuestionRepository repository;
 
-    public void save(String subject, String content){
+    public void save(QuestionForm qf){
         repository.save(Question.builder()
-                .subject(subject)
-                .content(content)
+                .subject(qf.getSubject())
+                .content(qf.getContent())
                 .createDate(LocalDateTime.now())
                 .build());
     }
