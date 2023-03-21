@@ -21,8 +21,8 @@ import java.util.List;
 public class QuestionController {
     final QuestionService service;
     @GetMapping("/list")
-    public String list(Model model){
-        model.addAttribute("questionList", service.list());
+    public String list(Model model, @RequestParam(defaultValue = "0") int page){
+        model.addAttribute("paging", service.list(page));
         return "question_list";
     }
     @GetMapping("/detail/{id}")

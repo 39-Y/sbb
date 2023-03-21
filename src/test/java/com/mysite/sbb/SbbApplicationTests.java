@@ -10,6 +10,7 @@ import org.assertj.core.api.Assertions;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,78 +29,97 @@ class SbbApplicationTests {
     @BeforeEach
     void before(){
         repository.deleteAll();
-        repository.clearAutoincrement();
-    }
-    @Transactional
-    @Test
-    void testJpa() {
+        repository.clearAutoIncrement();
         //저장하기
-        Question q1 = Question.builder()
+        repository.save(Question.builder()
                 .subject("sbb가 무엇인가요?")
                 .content("sbb에 대해서 알고 싶습니다.")
                 .createDate(LocalDateTime.now())
-                .build();
-        repository.save(q1);
+                .build());
 
-        Question q2 = Question.builder()
+        repository.save(Question.builder()
                 .subject("spring 모델이 무엇인가요?")
                 .content("spring은 id 자동생성 하나요.")
                 .createDate(LocalDateTime.now())
-                .build();
-        repository.save(q2);
+                .build());
+    }
 
+    @Test
+    @DisplayName("질문 모두 조회")
+    void t1(){
         //모두 조회
         List<Question> list = repository.findAll();
         Question q = list.get(0);
         Assertions.assertThat(q.getContent()).isEqualTo("sbb에 대해서 알고 싶습니다.");
         Assertions.assertThat(list.size()).isEqualTo(2);
+    }
 
-        //id 찾기
+    @Test
+    @DisplayName("질문 id 찾기")
+    void t2(){
         Optional<Question> oq = repository.findById(1);
         if(oq.isPresent()){
             Question qq = oq.get();
-            Assertions.assertThat(q.getSubject()).isEqualTo("sbb가 무엇인가요?");
+            Assertions.assertThat(qq.getSubject()).isEqualTo("sbb가 무엇인가요?");
         }
+    }
 
-        //제목 찾기
-        Question qqq = repository.findBySubject("sbb가 무엇인가요?").orElse(null);
-        Assertions.assertThat(qqq.getContent()).isEqualTo("sbb에 대해서 알고 싶습니다.");
+    @Test
+    @DisplayName("질문 제목 찾기")
+    void t3(){
+        Question q = repository.findBySubject("sbb가 무엇인가요?").orElse(null);
+        Assertions.assertThat(q.getContent()).isEqualTo("sbb에 대해서 알고 싶습니다.");
+    }
 
+    @Test
+    @DisplayName("질문 제목 찾기")
+    void t4(){
         //제목 검색
         List<Question> search = repository.findBySubjectLike("sbb%");
-        Question qqqq = search.get(0);
-        Assertions.assertThat(qqqq.getContent()).isEqualTo("sbb에 대해서 알고 싶습니다.");
+        Question q = search.get(0);
+        Assertions.assertThat(q.getContent()).isEqualTo("sbb에 대해서 알고 싶습니다.");
+    }
 
-        //수정
-        Optional<Question> opp = repository.findById(1);
+    @Test
+    @DisplayName("질문 수정하기")
+    void t5(){
+        int i = repository.findAll().get(0).getId();
+        Optional<Question> opp = repository.findById(i);
         assertTrue(opp.isPresent());
         Question q5 = opp.get();
         q5.setContent("sbb에 대한 수정된 질문");
         repository.save(q5);
+    }
 
-        //삭제
-//        assertEquals(2, repository.count());
-//        Optional<Question> op3 = repository.findById(1);
-//        assertTrue(op3.isPresent());
-//        Question q6 = op3.get();
-//        repository.delete(q6);
-//        assertEquals(1, repository.count());
-
-        //답변 데이터 생성
+    @Test
+    @DisplayName("질문에 답변 생성하기")
+    void t6(){
+        int i = repository.findAll().get(0).getId();
+        Optional<Question> opp = repository.findById(i);
+        assertTrue(opp.isPresent());
+        Question q = opp.get();
         answerRepository.save(
                 Answer.builder()
                         .content("네. 자동으로 생성됩니다.")
-                        .question(q2)
+                        .question(q)
                         .createTime(LocalDateTime.now())
                         .build());
         Answer a1 = answerRepository.findById(1).orElse(null);
-        assertEquals(2, a1.getQuestion().getId());
-
-        //질문에서 답변 보기
-        Question q7 = repository.findById(2).orElse(null);
+        assertEquals(i, a1.getQuestion().getId());
+    }
+    @Transactional
+    @Test
+    void t7() {
+        int i = repository.findAll().get(0).getId();
+        Question q7 = repository.findById(i+1).orElse(null);
         List<Answer> answers= q7.getAnswers();
         assertEquals(answers.size(), 1);
         assertEquals("네. 자동으로 생성됩니다.", answers.get(0).getContent());
     }
 
+    @Test
+    @DisplayName("대량의 데이터 생성")
+    void t8(){
+
+    }
 }
