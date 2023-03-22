@@ -1,5 +1,29 @@
 <html layout:decorate="~{layout}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
+<script layout:fragment="script" type="text/javascript">
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(element =>{
+        element.addEventListener('click', ()=>{
+            if(confirm("정말로 삭제하시겠습니까?")){
+                location.href = element.dataset.uri;
+            };
+        });
+    });
+</script>
+
+<!--<script layout:fragment="script" type='text/javascript'>-->
+<!--    const delete_elements = document.getElementsByClassName("delete");-->
+<!--    Array.from(delete_elements).forEach(function(element) {-->
+<!--        element.addEventListener('click', function() {-->
+<!--            if(confirm("정말로 삭제하시겠습니까?")) {-->
+<!--                location.href = this.dataset.uri;-->
+<!--            };-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+
+
+
     <div class="container my-3" layout:fragment="content">
     <!--질문-->
       <h2 class="border-bottom py-2" th:text="${question.subject}">제목</h2>
@@ -17,12 +41,18 @@
                         <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                     </div>
                 </div>
-                <div class="my-2">
+                <div class="my-2"
+                     th:if="${question.author !=null
+                            and #authentication.getPrincipal().getUsername() == question.author.username}">
+                    <a href="javascript:void(0);"
+                       th:data-uri="@{|/question/delete/${question.id}|}"
+                       class="delete btn btn-sm btn-outline-secondary"
+                       sec:authorize="isAuthenticated()"
+                       th:text="삭제"></a>
                     <a th:href="@{|/question/modify/${question.id}|}"
-                       th:if="${question.author !=null
-                            and #authentication.getPrincipal().getUsername() == question.author.username}"
                        class="btn btn-sm btn-outline-secondary"
-                       sec:authorize="isAuthenticated()" th:text="수정"></a>
+                       sec:authorize="isAuthenticated()"
+                       th:text="수정"></a>
                 </div>
             </div>
         </div>
@@ -72,4 +102,5 @@
       </form>
     </article>
     </div>
+
 </html>
