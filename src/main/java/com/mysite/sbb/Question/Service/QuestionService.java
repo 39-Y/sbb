@@ -3,6 +3,7 @@ package com.mysite.sbb.Question.Service;
 import com.mysite.sbb.Question.DTO.QuestionForm;
 import com.mysite.sbb.Question.Entity.Question;
 import com.mysite.sbb.Question.Entity.QuestionRepository;
+import com.mysite.sbb.user.entity.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,11 +19,12 @@ import java.util.List;
 public class QuestionService {
     final QuestionRepository repository;
 
-    public void save(QuestionForm qf){
+    public void save(QuestionForm qf, SiteUser user){
         repository.save(Question.builder()
                 .subject(qf.getSubject())
                 .content(qf.getContent())
                 .createDate(LocalDateTime.now())
+                .author(user)
                 .build());
     }
     public Page<Question> list(int page){

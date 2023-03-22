@@ -36,12 +36,20 @@
     <!--답변 반복 끝-->
 
     <!--답변 작성-->
-
-      <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="my-3">
+    <article >
+        <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="my-3">
           <div th:replace="~{form_errors :: formErrorsFragment}"></div>
-          <textarea th:field="*{content}" rows="15" class="form-control"></textarea>
+          <textarea sec:authorize="isAuthenticated()"
+                    th:field="*{content}"
+                    rows="15"
+                    class="form-control">
+          </textarea>
+            <textarea sec:authorize="isAnonymous()" disabled
+                      rows="15"
+                      class="form-control">
+            </textarea>
           <input type="submit" value="답변 등록" class="btn btn-primary my-2">
       </form>
-
+    </article>
     </div>
 </html>
