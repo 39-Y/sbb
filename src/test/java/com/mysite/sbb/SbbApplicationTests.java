@@ -4,7 +4,6 @@ import com.mysite.sbb.Answer.entity.Answer;
 import com.mysite.sbb.Answer.entity.AnswerRepository;
 import com.mysite.sbb.Question.Entity.Question;
 import com.mysite.sbb.Question.Entity.QuestionRepository;
-import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -93,11 +93,10 @@ class SbbApplicationTests {
 
     @Test
     @DisplayName("질문에 답변 생성하기")
+    @Transactional
     void t6(){
         int i = repository.findAll().get(0).getId();
-        Optional<Question> opp = repository.findById(i);
-        assertTrue(opp.isPresent());
-        Question q = opp.get();
+        Question q = repository.findById(i).get();
         answerRepository.save(
                 Answer.builder()
                         .content("네. 자동으로 생성됩니다.")
@@ -105,14 +104,8 @@ class SbbApplicationTests {
                         .createTime(LocalDateTime.now())
                         .build());
         Answer a1 = answerRepository.findById(1).orElse(null);
-        assertEquals(i, a1.getQuestion().getId());
-    }
-    @Transactional
-    @Test
-    void t7() {
-        int i = repository.findAll().get(0).getId();
-        Question q7 = repository.findById(i+1).orElse(null);
-        List<Answer> answers= q7.getAnswers();
+        assertEquals(i, q.getId());
+        List<Answer> answers= a1.getQuestion().getAnswers();
         assertEquals(answers.size(), 1);
         assertEquals("네. 자동으로 생성됩니다.", answers.get(0).getContent());
     }

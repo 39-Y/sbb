@@ -1,6 +1,7 @@
 package com.mysite.sbb.Question.Entity;
 
 import com.mysite.sbb.Answer.entity.Answer;
+import com.mysite.sbb.user.entity.SiteUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,9 @@ public class Question {
     @Column(length = 200)
     private String subject;
     private LocalDateTime createDate;
+    @ManyToOne
+    private SiteUser author;
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answers;
+
 }
