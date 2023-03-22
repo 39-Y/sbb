@@ -23,7 +23,7 @@ public class Question {
     @Column(length = 200)
     private String subject;
     private LocalDateTime createDate;
-    private LocalDateTime modifiyTime;
+    private LocalDateTime modifyDate;
 
     @ManyToOne
     private SiteUser author;
