@@ -1,5 +1,5 @@
 <html layout:decorate="~{layout}"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="container my-3" layout:fragment="content">
     <!--질문-->
       <h2 class="border-bottom py-2" th:text="${question.subject}">제목</h2>
@@ -17,6 +17,13 @@
                         <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                     </div>
                 </div>
+                <div class="my-2">
+                    <a th:href="@{|/question/modify/${question.id}|}"
+                       th:if="${question.author !=null
+                            and #authentication.getPrincipal().getUsername() == question.author.username}"
+                       class="btn btn-sm btn-outline-secondary"
+                       sec:authorize="isAuthenticated()" th:text="수정"></a>
+                </div>
             </div>
         </div>
     <!--답변 개수 표시-->
@@ -27,16 +34,23 @@
       <!--답변 반복 시작-->
       <div class="card my-3" th:each="answer:${question.answers}">
           <div class="card-body">
-              <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}">
-              </div>
+              <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}"></div>
               <div class="d-flex justify-content-end">
                   <div class="badge bg-light text-dark p-2 text-start">
                       <div class="mb-2">
                           <span th:if="${answer.author != null}" th:text="${answer.author.username}"></span>
                       </div>
-                      <div th:text="${#temporals.format(answer.createTime, 'yyyy-MM-dd HH:mm')}"></div>
+                      <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                   </div>
               </div>
+<!--              <div class="my-2">-->
+<!--                  <a href="#" class="btn btn-sm btn-outline-secondary">수정</a>-->
+<!--                  <a th:href="@{|/question/modify/${question.id}|}"-->
+<!--                     th:if="${question.author !=null-->
+<!--                            and #authentication.getPrincipal().getName() == question.author.username}"-->
+<!--                  class="btn btn-sm btn-outline-secondary"-->
+<!--                  sec:authorize="isAuthenticated()" th:text="수정"></a>-->
+<!--              </div>-->
           </div>
       </div>
     <!--답변 반복 끝-->

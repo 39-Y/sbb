@@ -2,11 +2,13 @@ package com.mysite.sbb.user.DTO;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class UserCreateForm {
     @Size(min=3, max=25)
     @NotEmpty(message = "ID를 입력해주세요.")

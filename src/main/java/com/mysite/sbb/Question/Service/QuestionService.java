@@ -28,14 +28,6 @@ public class QuestionService {
                 .build());
     }
     public Page<Question> list(int page){
-//        if(page == 0)
-//            for(int i=1; i<=300; i++){
-//                repository.save(Question.builder()
-//                        .subject(String.format("sbb가 무엇인가요?:::%3d", i))
-//                        .content("sbb에 대해서 알고 싶습니다.")
-//                        .createDate(LocalDateTime.now())
-//                        .build());
-//            }
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
@@ -44,5 +36,12 @@ public class QuestionService {
 
     public Question detail(Integer id){
         return repository.findById(id).orElse(null);
+    }
+
+    public void modify(Question question, QuestionForm questionForm) {
+        question.setSubject(questionForm.getSubject());
+        question.setContent(questionForm.getContent());
+        question.setModifiyTime(LocalDateTime.now());
+        repository.save(question);
     }
 }

@@ -101,7 +101,7 @@ class SbbApplicationTests {
                 Answer.builder()
                         .content("네. 자동으로 생성됩니다.")
                         .question(q)
-                        .createTime(LocalDateTime.now())
+                        .createDate(LocalDateTime.now())
                         .build());
         Answer a1 = answerRepository.findById(1).orElse(null);
         assertEquals(i, q.getId());

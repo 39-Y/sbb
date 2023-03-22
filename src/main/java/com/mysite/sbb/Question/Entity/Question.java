@@ -23,6 +23,8 @@ public class Question {
     @Column(length = 200)
     private String subject;
     private LocalDateTime createDate;
+    private LocalDateTime modifiyTime;
+
     @ManyToOne
     private SiteUser author;
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)

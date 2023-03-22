@@ -17,7 +17,7 @@ public class AnswerService {
     public void save(String content, Integer id, SiteUser user) {
         repository.save(Answer.builder()
                 .content(content)
-                .createTime(LocalDateTime.now())
+                .createDate(LocalDateTime.now())
                 .question(questionRepository.findById(id).orElse(null))
                 .author(user)
                 .build());

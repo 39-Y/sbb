@@ -18,7 +18,8 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String content;
-    private LocalDateTime createTime;
+    private LocalDateTime createDate;
+    private LocalDateTime modifyDate;
     @ManyToOne
     private SiteUser author;
     @ManyToOne
