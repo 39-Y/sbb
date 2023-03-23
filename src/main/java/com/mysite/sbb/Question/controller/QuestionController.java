@@ -28,8 +28,12 @@ public class QuestionController {
     final QuestionService service;
     final UserService userService;
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(defaultValue = "0") int page){
-        model.addAttribute("paging", service.list(page));
+    public String list(Model model,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "")String kw){
+        model.addAttribute("paging", service.list(page, kw));
+        model.addAttribute("kw", kw);
+
         return "question_list";
     }
     @GetMapping("/detail/{id}")

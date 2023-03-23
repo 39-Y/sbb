@@ -24,11 +24,10 @@
     <div class="container my-3" layout:fragment="content">
     <!--질문-->
       <h2 class="border-bottom py-2" th:text="${question.subject}">제목</h2>
-        <div class="card my-3">
+        <div class="card my-3 p-3">
             <div class="card-body">
-                <div class="card-text"
-                     style="white-space: pre-line;"
-                     th:text="${question.content}">
+                <div class="card-text" th:utext="${@commonUtil.markdown(question.content)}"></div>
+
                 </div>
                 <div class="d-flex justify-content-end">
                     <div class="badge bg-light text-dark p-2 text-start">
@@ -63,7 +62,6 @@
                     </span>
                 </article>
             </div>
-        </div>
     <!--답변 개수 표시-->
       <div>
           <h5 class="border-bottom my-3 py-2"
@@ -73,7 +71,7 @@
       <div class="card my-3" th:each="answer:${question.answers}">
           <a th:id="|answer_${answer.id}|"></a>
           <div class="card-body">
-              <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}"></div>
+              <div class="card-text p-2" th:utext="${@commonUtil.markdown(answer.content)}"></div>
               <div class="d-flex justify-content-end">
                   <div class="badge bg-light text-dark p-2 text-start">
                       <div class="mb-2">
