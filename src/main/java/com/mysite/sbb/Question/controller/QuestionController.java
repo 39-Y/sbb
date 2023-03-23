@@ -96,4 +96,12 @@ public class QuestionController {
         service.delete(question);
         return "redirect:/question/list";
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    public String questionVote(Principal principal,
+                                @PathVariable Integer id){
+        service.vote(userService.getUser(principal.getName()), id);
+        return String.format("redirect:/question/detail/%s", id);
+    }
 }

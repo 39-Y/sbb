@@ -41,8 +41,10 @@ public class AnswerController {
         }
 
         SiteUser user = userService.getUser(principal.getName());
-        service.save(answerForm, id, user);
-        return String.format("redirect:/question/detail/%s", id);
+        Answer answer = service.save(answerForm, id, user);
+        return String.format("redirect:/question/detail/%s#answer_%s"
+                , answer.getQuestion().getId()
+                , answer.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -69,7 +71,9 @@ public class AnswerController {
         if(!answer.getAuthor().getUsername().equals(principal.getName()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "댓글 권한이 없습니다.");
         service.modify(answer, answerForm.getContent());
-        return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+        return String.format("redirect:/question/detail/%s#answer_%s"
+                , answer.getQuestion().getId()
+                , answer.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -81,5 +85,14 @@ public class AnswerController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "댓글 삭제 권한이 없습니다.");
         service.delete(answerId);
         return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    public String questionVote(Principal principal,
+                               @PathVariable Integer answerId){
+        int questionId = service.get(answerId).getQuestion().getId();
+        service.vote(userService.getUser(principal.getName()), answerId);
+        return String.format("redirect:/question/detail/%s#%s", questionId, answerId);
     }
 }

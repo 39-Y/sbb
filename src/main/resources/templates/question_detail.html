@@ -9,6 +9,16 @@
             };
         });
     });
+
+    const vote_elements = document.getElementsByClassName("recommend");
+    Array.from(vote_elements).forEach(el =>{
+       el.addEventListener('click', () =>{
+            if(confirm("추천하시나요?")){
+                location.href = el.dataset.uri;
+            }
+           }
+       );
+    });
 </script>
 
     <div class="container my-3" layout:fragment="content">
@@ -32,19 +42,26 @@
                         </article>
                     </div>
                 </div>
-                <div class="my-2"
-                     th:if="${question.author !=null
-                            and #authentication.getPrincipal().getUsername() == question.author.username}">
+                <article class="my-2">
                     <a href="javascript:void(0);"
-                       th:data-uri="@{|/question/delete/${question.id}|}"
-                       class="delete btn btn-sm btn-outline-secondary"
-                       sec:authorize="isAuthenticated()"
-                       th:text="삭제"></a>
-                    <a th:href="@{|/question/modify/${question.id}|}"
-                       class="btn btn-sm btn-outline-secondary"
-                       sec:authorize="isAuthenticated()"
-                       th:text="수정"></a>
-                </div>
+                        class="recommend btn btn-sm btn-outline-secondary"
+                        th:data-uri="@{|/question/vote/${question.id}|}">
+                        추천
+                        <span class="badge rounded-pill bg-success"
+                            th:text="${#lists.size(question.voter)}"></span>
+                    </a>
+                    <span sec:authorize="isAuthenticated()"
+                          th:if="${question.author != null
+                          and #authentication.getPrincipal().getUsername() == question.author.username}">
+                        <a href="javascript:void(0);"
+                           th:data-uri="@{|/question/delete/${question.id}|}"
+                           class="delete btn btn-sm btn-outline-secondary"
+                           th:text="삭제"></a>
+                        <a th:href="@{|/question/modify/${question.id}|}"
+                           class="btn btn-sm btn-outline-secondary"
+                           th:text="수정"></a>
+                    </span>
+                </article>
             </div>
         </div>
     <!--답변 개수 표시-->
@@ -54,6 +71,7 @@
       </div>
       <!--답변 반복 시작-->
       <div class="card my-3" th:each="answer:${question.answers}">
+          <a th:id="|answer_${answer.id}|"></a>
           <div class="card-body">
               <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}"></div>
               <div class="d-flex justify-content-end">
@@ -68,19 +86,27 @@
                       </article>
                   </div>
               </div>
-              <div class="my-2"
-                   th:if="${answer.author !=null
-                            and #authentication.getPrincipal().getUsername() == answer.author.username}">
+              <article>
                   <a href="javascript:void(0);"
-                     th:data-uri="@{|/answer/delete/${answer.id}|}"
-                     class="delete btn btn-sm btn-outline-secondary"
-                     sec:authorize="isAuthenticated()"
-                     th:text="삭제"></a>
-                  <a th:href="@{|/answer/modify/${answer.id}|}"
-                     class="btn btn-sm btn-outline-secondary"
-                     sec:authorize="isAuthenticated()"
-                     th:text="수정"></a>
-              </div>
+                     class="recommend btn btn-sm btn-outline-secondary"
+                     th:data-uri="@{|/question/vote/${question.id}|}">
+                      추천
+                      <span class="badge rounded-pill bg-success"
+                            th:text="${#lists.size(question.voter)}"></span>
+                  </a>
+                  <span class="my-2"
+                        sec:authorize="isAuthenticated()"
+                        th:if="${answer.author !=null
+                                and #authentication.getPrincipal().getUsername() == answer.author.username}">
+                      <a href="javascript:void(0);"
+                         th:data-uri="@{|/answer/delete/${answer.id}|}"
+                         class="delete btn btn-sm btn-outline-secondary"
+                         th:text="삭제"></a>
+                      <a th:href="@{|/answer/modify/${answer.id}|}"
+                         class="btn btn-sm btn-outline-secondary"
+                         th:text="수정"></a>
+                  </span>
+              </article>
           </div>
       </div>
     <!--답변 반복 끝-->

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +42,19 @@ public class QuestionService {
     public void modify(Question question, QuestionForm questionForm) {
         question.setSubject(questionForm.getSubject());
         question.setContent(questionForm.getContent());
-        question.setModifiyTime(LocalDateTime.now());
+        question.setModifyDate(LocalDateTime.now());
         repository.save(question);
     }
 
     public void delete(Question question) {
         repository.delete(question);
+    }
+
+    public void vote(SiteUser user, Integer id) {
+        Question question = repository.findById(id).orElse(null);
+        if(question != null){
+            question.getVoter().add(user);
+            repository.save(question);
+        }
     }
 }

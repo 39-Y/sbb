@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 public class AnswerService {
     final AnswerRepository repository;
     final QuestionRepository questionRepository;
-    public void save(AnswerForm answerForm, Integer id,SiteUser user) {
-        repository.save(Answer.builder()
+    public Answer save(AnswerForm answerForm, Integer id,SiteUser user) {
+        return repository.save(Answer.builder()
                 .content(answerForm.getContent())
                 .createDate(LocalDateTime.now())
                 .question(questionRepository.findById(id).orElse(null))
@@ -37,5 +37,13 @@ public class AnswerService {
         Answer answer = repository.findById(answerId).orElse(null);
         if(answer != null)
             repository.delete(answer);
+    }
+
+    public void vote(SiteUser user, Integer answerId) {
+        Answer answer = get(answerId);
+        if (answer != null){
+            answer.getVoter().add(user);
+            repository.save(answer);
+        }
     }
 }
